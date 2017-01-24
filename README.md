@@ -1,7 +1,7 @@
 Mining Your Ps and Qs
 =====================
 
-Reimplementation of (this paper)[https://factorable.net/weakkeys12.extended.pdf]
+Reimplementation of [this paper](https://factorable.net/weakkeys12.extended.pdf)
 
 Max Zinkus, Nick Gonella, Jasper Kahn
 
