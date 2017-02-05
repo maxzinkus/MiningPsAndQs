@@ -30,7 +30,6 @@ void key_gen(pub_key *pub, priv_key *priv) {
 
    mpz_inits(p_1, q_1, phi, NULL);
 
-   generatePrimes(priv->p, priv->q);
    mpz_mul(pub->n, priv->p, priv->q);
 
    mpz_sub_ui(p_1, priv->p, 1);
@@ -51,21 +50,4 @@ void decrypt(mpz_t ret, priv_key *priv, mpz_t ct) {
    mpz_mul(n, priv->p, priv->q);
 
    mpz_powm(ret, ct, priv->d, n);
-}
-
-void main(int argc, char **argv) {
-   pub_key pub;
-   priv_key priv;
-   mpz_t mt, ct, rec;
-
-   mpz_inits(mt, ct, rec, NULL);
-   mpz_set_si(mt, 63);
-
-   init_keypair(&pub, &priv);
-   key_gen(&pub, &priv);
-
-   encrypt(ct, &pub, mt);
-
-   decrypt(rec, &priv, ct);
-
 }

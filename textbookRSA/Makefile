@@ -1,9 +1,12 @@
 CC = gcc
 LIBS = -lgmp
-CFLAGS = -g
+CFLAGS = 
 
-RSA: RSA.o
-	$(CC) $(CFLAGS) $(LIBS) -o $@ $<
+driver: driver.o librsa.so
+	$(CC) $(CFLAGS) $(LIBS) -L. -lrsa -o $@ $<
+
+librsa.so: RSA.c
+	$(CC) -fPIC -shared $(CFLAGS) $(LIBS) -o $@ $<
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -12,4 +15,4 @@ RSA: RSA.o
 	touch $@
 
 clean:
-	$(RM) *.o *.so RSA
+	$(RM) *.o *.so driver
