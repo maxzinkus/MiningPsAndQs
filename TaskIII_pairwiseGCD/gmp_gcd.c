@@ -29,11 +29,12 @@ char *readmods(char *filename) {
 void pairwise(char *filename) {
    mpz_t res;
    mpz_t *mod;
-   int num;
+   int num, len;
    char *data = readmods(filename);
    char **dp = &data;
 
-   for (int i = 0; i < strlen(data); i++) {
+   len = strlen(data);
+   for (int i = 0; i < len; i++) {
       if (data[i] == '\n') {
         num++;
       }
@@ -57,6 +58,7 @@ void pairwise(char *filename) {
          }
       }
    }
+   free(mod);
 }
 
 int main(int argc, char **argv) {
