@@ -51,10 +51,12 @@ void pairwise(char *filename) {
    for (int i = 0; i < num; i++) {
       for (int j = i; j < num; j++) {
          if (i != j) {
-            printf("%d with %d: ", i, j);
             mpz_gcd(res, mod[i], mod[j]);
-            mpz_out_str(stdout, 10, res);
-            printf("\n");
+            if (mpz_cmp_si(res, 1) > 0) {
+               printf("%d with %d: ", i, j);
+               mpz_out_str(stdout, 10, res);
+               printf("\n");
+            }
          }
       }
    }
