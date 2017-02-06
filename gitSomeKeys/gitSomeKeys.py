@@ -8,7 +8,7 @@ def getModulus(key):
     key = key[4+length:]
     length = int.from_bytes(key[:4], 'big')
     modulus = key[5:length + 4]
-    return ':'.join('{:02X}'.format(x) for x in modulus)
+    return ''.join('{:d}'.format(x) for x in modulus)
 
 def filterRSA(keys):
     key_material = []
@@ -24,10 +24,14 @@ def pullKey(addr):
     keys = filterRSA(key_lines)
     return list(map(lambda x: getModulus(base64.b64decode(x)), keys))
 
+forMax = open('max.txt', 'w')
+forZach = open('zach.txt', 'w')
 while 1:
     try:
         line = input("")
     except EOFError:
         break
+    forZach.write(line + '\n')
     for key in pullKey(line):
-        print(key)
+        forZach.write(key + '\n')
+        forMax.write(key + '\n')
