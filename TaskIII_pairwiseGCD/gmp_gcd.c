@@ -10,35 +10,33 @@
 
 #define MAX_LINE 1024
 
-char *readmods(char *filename) {
-   char *data, *modstr;
+int readmods(char *filename, char **modstr) {
+   char *data;
    struct stat buf;
-   int fd = open(filename, O_RDONLY);
+   int num = 0, fd = open(filename, O_RDONLY);
 
    fstat(fd, &buf);
    data = mmap(NULL, buf.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
-   modstr = calloc(buf.st_size, 1);
+   *modstr = calloc(buf.st_size, 1);
 
    for (int i = 0; i < buf.st_size; i++) {
-      modstr[i] = data[i];
+      (*modstr)[i] = data[i];
+      if (data[i] == '\n') {
+         num++;
+      }
    }
    munmap(data, buf.st_size);
-   return modstr; 
+   return num; 
 }
 
 void pairwise(char *filename) {
    mpz_t res;
    mpz_t *mod;
-   int num, len;
-   char *data = readmods(filename);
+   int num;
+   char *data;
    char **dp = &data;
-
-   len = strlen(data);
-   for (int i = 0; i < len; i++) {
-      if (data[i] == '\n') {
-        num++;
-      }
-   } 
+   
+   num = readmods(filename, &data);
 
    mod = calloc(sizeof(mpz_t), num);
 
@@ -51,10 +49,12 @@ void pairwise(char *filename) {
    for (int i = 0; i < num; i++) {
       for (int j = i; j < num; j++) {
          if (i != j) {
-            printf("%d with %d: ", i, j);
             mpz_gcd(res, mod[i], mod[j]);
-            mpz_out_str(stdout, 10, res);
-            printf("\n");
+            if (mpz_cmp_si(res, 1) > 0) {
+               printf("%d with %d: ", i, j);
+               mpz_out_str(stdout, 10, res);
+               printf("\n");
+            }
          }
       }
    }
