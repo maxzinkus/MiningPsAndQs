@@ -8,7 +8,7 @@ def getModulus(key):
     key = key[4+length:]
     length = int.from_bytes(key[:4], 'big')
     modulus = key[5:length + 4]
-    return ''.join('{:d}'.format(x) for x in modulus)
+    return str(int.from_bytes(modulus, 'big'))
 
 def filterRSA(keys):
     key_material = []
