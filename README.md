@@ -24,7 +24,7 @@ An implementation of RSA can be found in `RSA.c`, conforming to the structures o
 
 ## Task V
 The decrypted message was:
-```Message here```
+"All your P's belong to me"
 
 ## Task VI
 Using some python and shell scripting, we pulled a few thousand public keys from GitHub. A user's public key can be found by visiting `https://github.com/<user>.keys`.
