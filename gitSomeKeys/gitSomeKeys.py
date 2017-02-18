@@ -1,15 +1,6 @@
 #!/usr/bin/env python3
 import sys, requests, base64
 
-def getModulus(key):
-    length = int.from_bytes(key[:4], 'big')
-    key = key[4+length:]
-    length = int.from_bytes(key[:4], 'big')
-    key = key[4+length:]
-    length = int.from_bytes(key[:4], 'big')
-    modulus = key[5:length + 4]
-    return str(int.from_bytes(modulus, 'big'))
-
 def filterRSA(keys):
     key_material = []
     for key in keys:
@@ -18,20 +9,21 @@ def filterRSA(keys):
             key_material.append(key_parts[1])
     return key_material
 
-
 def pullKey(addr):
     key_lines = requests.get(addr + ".keys").text.split('\n')
     keys = filterRSA(key_lines)
-    return list(map(lambda x: getModulus(base64.b64decode(x)), keys))
+    return keys
 
-forMax = open('max.txt', 'w')
-forZach = open('zach.txt', 'w')
-while 1:
-    try:
-        line = input("")
-    except EOFError:
-        break
-    forZach.write(line + '\n')
-    for key in pullKey(line):
-        forZach.write(key + '\n')
-        forMax.write(key + '\n')
+from subprocess import getoutput, call
+
+def convert(path):
+    call("ssh-keygen -f %s -e -m PEM > tmp.pem" % path, shell=True)
+    with open('tmp.pem', 'r') as f:
+        lns = f.readlines()
+    strip = filter(lambda u: "PUBLIC KEY" not in u, lns)
+    joined = ''.join(strip)
+    with open("tmp.der", "w") as o:
+        o.write(joined)
+    out = getoutput("cat tmp.der | base64 -d | openssl asn1parse -inform DER") 
+    call("rm ./tmp.der ./tmp.pem", shell=True)
+    return out.split()[out.split().index("INTEGER")+1][1:]
