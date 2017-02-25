@@ -17,7 +17,9 @@ def pullKey(addr):
 from subprocess import getoutput, call
 
 def convert(path):
+    # SSH format to PEM
     call("ssh-keygen -f %s -e -m PEM > tmp.pem" % path, shell=True)
+    # PEM to Moduli
     with open('tmp.pem', 'r') as f:
         lns = f.readlines()
     strip = filter(lambda u: "PUBLIC KEY" not in u, lns)
